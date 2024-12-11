@@ -30,7 +30,7 @@ public class ArtistServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         IWebExchange webExchange = JakartaServletWebApplication.buildApplication(getServletContext()).buildExchange(req, resp);
         WebContext context = new WebContext(webExchange);
-        context.setVariable("song", this.songService.findByTrackId(Long.parseLong(req.getParameter("songChoice"))).get());
+        context.setVariable("song", this.songService.findById(Long.parseLong(req.getParameter("songChoice"))).get());
         context.setVariable("artists", this.artistService.listArtists());
         this.springTemplateEngine.process("artistsList.html", context, resp.getWriter());
     }

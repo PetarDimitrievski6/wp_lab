@@ -18,7 +18,7 @@ public class ArtistController {
 
     @PostMapping("/artist-add")
     public String addArtist(@RequestParam(name = "songChoice") Long id, Model model){
-        Song song = this.songService.findByTrackId(id).get();
+        Song song = this.songService.findById(id).get();
         model.addAttribute("song", song);
         model.addAttribute("artists", this.artistService.listArtists());
         return "artistsList";

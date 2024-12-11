@@ -12,9 +12,9 @@ public interface SongService {
 
     Artist addArtistToSong(Artist artist, Song song);
 
-    Optional<Song> findByTrackId(Long trackId);
+    Optional<Song> findById(Long id);
 
-    Optional<Song> save(String title, Long id, String genre, int releaseYear, Long albumId);
+    Optional<Song> save(String title, String genre, int releaseYear, Long albumId);
 
     void deleteById(Long id);
 }

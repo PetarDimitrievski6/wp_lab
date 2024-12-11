@@ -40,19 +40,18 @@ public class SongController {
     @PostMapping("/add")
     public String saveSong(
             @RequestParam String title,
-            @RequestParam Long id,
             @RequestParam String genre,
             @RequestParam int releaseYear,
             @RequestParam Long album
     ){
-        this.songService.save(title, id, genre, releaseYear, album);
+        this.songService.save(title, genre, releaseYear, album);
         return "redirect:/songs";
     }
 
     @GetMapping("/edit/{id}")
     public String editSong(@PathVariable Long id, Model model){
-        if (this.songService.findByTrackId(id).isPresent()){
-            Song song = this.songService.findByTrackId(id).get();
+        if (this.songService.findById(id).isPresent()){
+            Song song = this.songService.findById(id).get();
             List<Album> albums = this.albumService.findAll();
             model.addAttribute("song", song);
             model.addAttribute("albums", albums);
@@ -67,8 +66,8 @@ public class SongController {
     }
     @GetMapping("/edit-form/{id}")
     public String getEditSongForm(@PathVariable Long id, Model model){
-        if (this.songService.findByTrackId(id).isPresent()){
-            Song song = this.songService.findByTrackId(id).get();
+        if (this.songService.findById(id).isPresent()){
+            Song song = this.songService.findById(id).get();
             List<Album> albums = this.albumService.findAll();
             model.addAttribute("song", song);
             model.addAttribute("albums", albums);
@@ -86,7 +85,7 @@ public class SongController {
     public String getSongDetails(@RequestParam(name = "song") Long songId,
                                  @RequestParam(name = "artistChoice") Long artistId,
                                  Model model){
-        Song song = this.songService.findByTrackId(songId).get();
+        Song song = this.songService.findById(songId).get();
         Artist artist = this.artistService.artistFindById(artistId);
         songService.addArtistToSong(artist, song);
         model.addAttribute("song", song);

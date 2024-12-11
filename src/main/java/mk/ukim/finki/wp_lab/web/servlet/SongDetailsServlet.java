@@ -30,7 +30,7 @@ public class SongDetailsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Song song = this.songService.findByTrackId(Long.parseLong(req.getParameter("song"))).get();
+        Song song = this.songService.findById(Long.parseLong(req.getParameter("song"))).get();
         Artist artist = this.artistService.artistFindById(Long.parseLong(req.getParameter("artistChoice")));
         songService.addArtistToSong(artist, song);
         IWebExchange webExchange = JakartaServletWebApplication.buildApplication(getServletContext()).buildExchange(req, resp);

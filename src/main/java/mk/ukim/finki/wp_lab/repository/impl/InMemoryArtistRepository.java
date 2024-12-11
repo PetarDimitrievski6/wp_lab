@@ -1,4 +1,4 @@
-package mk.ukim.finki.wp_lab.repository;
+package mk.ukim.finki.wp_lab.repository.impl;
 
 import mk.ukim.finki.wp_lab.bootstrap.DataHolder;
 import mk.ukim.finki.wp_lab.model.Artist;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class ArtistRepository {
+public class InMemoryArtistRepository {
     public List<Artist> findAll() {
         return DataHolder.artists;
     }

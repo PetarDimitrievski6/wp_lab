@@ -1,13 +1,17 @@
 package mk.ukim.finki.wp_lab.service.impl;
 
+import jakarta.transaction.Transactional;
 import mk.ukim.finki.wp_lab.model.Album;
 import mk.ukim.finki.wp_lab.model.Artist;
 import mk.ukim.finki.wp_lab.model.Song;
-import mk.ukim.finki.wp_lab.repository.AlbumRepository;
-import mk.ukim.finki.wp_lab.repository.SongRepository;
+import mk.ukim.finki.wp_lab.repository.impl.InMemoryAlbumRepository;
+import mk.ukim.finki.wp_lab.repository.impl.InMemorySongRepository;
+import mk.ukim.finki.wp_lab.repository.jpa.AlbumRepository;
+import mk.ukim.finki.wp_lab.repository.jpa.SongRepository;
 import mk.ukim.finki.wp_lab.service.SongService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,7 @@ public class SongServiceImpl implements SongService {
         this.albumRepository = albumRepository;
     }
 
+
     @Override
     public List<Song> listSongs() {
         return songRepository.findAll();
@@ -28,18 +33,26 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Artist addArtistToSong(Artist artist, Song song) {
-        return songRepository.addArtistToSong(artist, song);
+        if (!song.getArtists().stream().filter(a -> a.getId().equals(artist.getId())).toList().isEmpty()){
+            throw new RuntimeException();
+        }
+        song.getArtists().add(artist);
+        this.songRepository.save(song);
+        return artist;
     }
 
     @Override
-    public Optional<Song> findByTrackId(Long id) {
-        return songRepository.findByTrackId(id);
+    public Optional<Song> findById(Long id) {
+        return songRepository.findById(id);
     }
 
     @Override
-    public Optional<Song> save(String title, Long id, String genre, int releaseYear, Long albumId) {
-        Album album = this.albumRepository.findAll().stream().filter(album1 -> album1.getId().equals(albumId)).findFirst().orElseThrow(RuntimeException::new);
-        return this.songRepository.save(title, id, genre, releaseYear, album);
+    @Transactional
+    public Optional<Song> save(String title, String genre, int releaseYear, Long albumId) {
+        Album album = this.albumRepository.findById(albumId).orElseThrow(RuntimeException::new);
+        Song song = new Song(title, genre, releaseYear, new ArrayList<>(), album);
+        this.songRepository.deleteByTitle(title);
+        return Optional.of(this.songRepository.save(song));
     }
 
     @Override

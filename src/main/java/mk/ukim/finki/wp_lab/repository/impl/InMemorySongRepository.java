@@ -1,18 +1,17 @@
-package mk.ukim.finki.wp_lab.repository;
+package mk.ukim.finki.wp_lab.repository.impl;
 
 import mk.ukim.finki.wp_lab.bootstrap.DataHolder;
 import mk.ukim.finki.wp_lab.model.Album;
 import mk.ukim.finki.wp_lab.model.Artist;
 import mk.ukim.finki.wp_lab.model.Song;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class SongRepository {
+public class InMemorySongRepository {
     public List<Song> findAll(){
         return DataHolder.songs;
     }
@@ -23,8 +22,8 @@ public class SongRepository {
                 .findFirst();
     }
     public Artist addArtistToSong(Artist artist, Song song){
-        song.getPerformers().removeIf(artist1 -> artist1.getId().equals(artist.getId()));
-        song.getPerformers().add(artist);
+        song.getArtists().removeIf(artist1 -> artist1.getId().equals(artist.getId()));
+        song.getArtists().add(artist);
         return artist;
     }
     public Optional<Song> save(String title, Long id, String genre, int releaseYear, Album album){

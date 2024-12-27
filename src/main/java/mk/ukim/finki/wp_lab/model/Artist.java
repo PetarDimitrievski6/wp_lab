@@ -17,7 +17,8 @@ public class Artist {
     private String firstName;
     private String lastName;
     private String bio;
-
+    @ManyToMany(mappedBy = "artists")
+    private List<Song> songs;
 
     public Artist(String firstName, String lastName, String bio) {
         this.firstName = firstName;

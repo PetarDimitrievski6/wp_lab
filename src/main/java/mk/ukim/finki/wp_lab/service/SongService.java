@@ -15,6 +15,6 @@ public interface SongService {
     Optional<Song> findById(Long id);
 
     Optional<Song> save(String title, String genre, int releaseYear, Long albumId);
-
+    Optional<Song> edit(Long id, String title, String genre, int releaseYear, Long albumId);
     void deleteById(Long id);
 }

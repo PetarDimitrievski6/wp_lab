@@ -56,6 +56,20 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
+    @Transactional
+    public Optional<Song> edit(Long id, String title, String genre, int releaseYear, Long albumId) {
+        Song song = this.songRepository.findById(id).orElseThrow(RuntimeException::new);
+        Album album = this.albumRepository.findById(albumId).orElseThrow(RuntimeException::new);
+
+        song.setTitle(title);
+        song.setGenre(genre);
+        song.setReleaseYear(releaseYear);
+        song.setAlbum(album);
+
+        return Optional.of(this.songRepository.save(song));
+    }
+
+    @Override
     public void deleteById(Long id) {
         this.songRepository.deleteById(id);
     }

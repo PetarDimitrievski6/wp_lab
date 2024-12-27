@@ -44,14 +44,20 @@
               <td th:text="${song.getTitle()}"></td>
               <td th:text="${song.getAlbum().getName()}"></td>
               <td class="text-right">
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <form th:method="delete" th:action="@{'/songs/delete/{id}' (id=${song.getId()})}">
                   <button type="submit" class="btn btn-sm btn-danger"><i class="fa fa-trash">Delete</i></button>
                 </form>
-                <a class="btn btn-sm btn-info" th:href="@{'/songs/edit/{id}' (id=${song.getId()})}"><i class="fa fa-trash">Edit</i></a>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                <a class="btn btn-sm btn-info" th:href="@{'/songs/edit-form/{id}' (id=${song.getId()})}"><i class="fa fa-trash">Edit</i></a>
+                </th:block>
+                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
                 <form th:method="post" th:action="@{'/artist-add'}">
                   <input type="hidden" name="songChoice" th:value="${song.getId()}">
                   <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-trash">Add artist to song</i></button>
                 </form>
+                </th:block>
               </td>
             </tr>
             </tbody>
@@ -60,9 +66,11 @@
       </div>
       <div class="col mb-3">
         <div class="row">
+          <th:block sec:authorize="hasRole('ROLE_ADMIN')">
           <div class="col-sm-12 col-md-12">
             <a href="songs/add-form" class="btn btn-block btn-dark">Add new song</a>
           </div>
+          </th:block>
         </div>
       </div>
     </div>

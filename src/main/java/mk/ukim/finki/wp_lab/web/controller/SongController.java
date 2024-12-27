@@ -6,6 +6,7 @@ import mk.ukim.finki.wp_lab.model.Song;
 import mk.ukim.finki.wp_lab.service.AlbumService;
 import mk.ukim.finki.wp_lab.service.ArtistService;
 import mk.ukim.finki.wp_lab.service.SongService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/songs")
+@RequestMapping(value = {"/songs", "/"})
 public class SongController {
     private final SongService songService;
     private final AlbumService albumService;
@@ -25,7 +26,7 @@ public class SongController {
         this.artistService = artistService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String getSongsPage(@RequestParam(required = false) String error, Model model){
         if (error != null && !error.isEmpty()){
             model.addAttribute("hasError", true);
@@ -38,33 +39,30 @@ public class SongController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public String saveSong(
+            @RequestParam(required = false) Long id,
             @RequestParam String title,
             @RequestParam String genre,
             @RequestParam int releaseYear,
             @RequestParam Long album
     ){
-        this.songService.save(title, genre, releaseYear, album);
+        if (id != null){
+            this.songService.edit(id, title, genre, releaseYear, album);
+        } else {
+            this.songService.save(title, genre, releaseYear, album);
+        }
         return "redirect:/songs";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editSong(@PathVariable Long id, Model model){
-        if (this.songService.findById(id).isPresent()){
-            Song song = this.songService.findById(id).get();
-            List<Album> albums = this.albumService.findAll();
-            model.addAttribute("song", song);
-            model.addAttribute("albums", albums);
-            return "add-song";
-        }
-        return "redirect:/songs?error=SongNotFound";
-    }
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteSong(@PathVariable Long id){
         this.songService.deleteById(id);
         return "redirect:/songs";
     }
     @GetMapping("/edit-form/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getEditSongForm(@PathVariable Long id, Model model){
         if (this.songService.findById(id).isPresent()){
             Song song = this.songService.findById(id).get();
@@ -76,6 +74,7 @@ public class SongController {
         return "redirect:/songs?error=SongNotFound";
     }
     @GetMapping("/add-form")
+    @PreAuthorize("hasRole('ADMIN')")
     public String getAddSongPage(Model model){
         List<Album> albums = this.albumService.findAll();
         model.addAttribute("albums", albums);
